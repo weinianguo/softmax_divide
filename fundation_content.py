@@ -42,4 +42,12 @@
         plt.title('Training and Validation Loss')
         plt.legend()
         plt.show()
-（3）
+（3）模型的加载和预测：model.load_weight和model.predict
+        import tensorflow as tf
+        model = tf.keras.models.Sequential([
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(128, activation='relu'),
+            tf.keras.layers.Dense(10, activation='softmax')])
+        model.load_weights(model_save_path)
+        result=model.predict(x_predict)
+
