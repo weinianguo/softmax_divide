@@ -52,15 +52,21 @@
         result=model.predict(x_predict)
 (4)图像处理博客的网络地址：https://betterbench.blog.csdn.net/article/details/109519282
    卷积--标准化--池化
-        积输出维度计算已知：假设输入的图片 尺寸 ：A x A     卷积核 大小：K    步长Stride：S   Padding大小：P    求解： 输出的embedding 维度 B：B = (A + 2*P - K) / S + 1
+        积输出维度计算已知：假设输入的图片 尺寸 ：A x A     卷积核 大小：K    步长Stride：S   Padding大小：P    求解： 输出的embedding 维度 B：B = (A + 2*P - K) / S + 1 假如K也是二维数，那就单独为height和width进行单独计算
+        当输入图片尺寸为： Winput*Hinput  卷积核大小为： W kernerl*Hkernerl  步长为 S， padding大小为P
+        卷积宽度方向： Wout = Winput - Wkernerl + 2 * Padding / Strides + 1  #当padding=same时，padding=（kernal_size-1）/2，也就是会达到保持矩阵经过卷积后的维度大小不变
+        卷积高度方向：Hout = Hinput - Hkernel + 2 * Padding / Strides + 1   #当padding=same时，padding=（kernal_size-1）/2，也就是会达到保持矩阵经过卷积后的维度大小不变
+        池化维度输出计算：假设输入的图片 尺寸 ：A x A       卷积核 大小：K    步长Stride：S   Padding大小：P    求解： 输出的embedding 维度 B：B = (A - K+ 2*P) / S + 1
         
+        卷积核的参数参考这个帖子：CNN卷积函数Conv2D()各参数的含义及用法--https://blog.csdn.net/Zh_1999a/article/details/107526001?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522170218114616800182789739%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=170218114616800182789739&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~hot_rank-1-107526001-null-null.142^v96^pc_search_result_base6&utm_term=conv2d%E7%9A%84%20filters%20&spm=1018.2226.3001.4187
         tf.keras.layers.Conv2D(
-        filters = 卷积核个数，
+        filters = 卷积核个数，也就是卷积核作用后的最后的一个维度就是它
         kernel_size = 卷积核尺寸，# 正方形写核长整数，或（核高h,核宽w）
         strides = 滑动步长，#横纵向相同写步长整数，或（纵向步长h，横向步长w）,默认1
-        padding = “same” or “valid” .#使用全零填充是“same”，不适用是“valid”（默认）
+        padding = “same” or “valid” .#使用全零填充是“same”，不适用是“valid”（默认）；当padding=same时，P=使得输入和输出的维度相同
         activation = “relu” or “sigmoid” or “tanh” or "softmax"等，#如有BN（批标准化操作）此处不谢
         input_shape = （高，宽，通道数）# 输入特征图维度，可省略)
+        
 
         model = tf.keras.models.Sequential([
             Conv2D(filters = 6,kernel_size = (5,5),padding = 'same'),#卷积层
