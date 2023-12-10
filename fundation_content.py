@@ -16,7 +16,7 @@
         checkpoint_save_path = "./checkpoint/mnist.ckpt"# 生成ckpt文件的时候，会产生相应的索引表
         if os.path.exists(checkpoint_save_path + '.index'):# 通过判断是否有索引表，去判断是否保存过模型的参数
             print('-------------load the model-----------------')
-            model.load_weights(checkpoint_save_path)# 读取模型参数
+            model.load_weights(checkpoint_save_path)# 读取模型参数，这里就是断点续训
         # 保存模型： 
         cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_save_path,
                                                          save_weights_only=True,# 是否只保留模型参数
@@ -24,3 +24,22 @@
         history = model.fit(x_train, y_train, batch_size=32, epochs=5, validation_data=(x_test, y_test), validation_freq=1,
                             callbacks=[cp_callback])
         model.summary()
+(2)训练参数的可视化：采用history=model.fit(),然后调用acc=history.history['列名’]来进行调用对应的损失行数参数，plt.plot（loss， label=‘’）
+        import matplotlib.pyplot as plt
+        # 显示训练集和验证集的acc和loss曲线
+        acc = history.history['sparse_categorical_accuracy']
+        val_acc = history.history['val_sparse_categorical_accuracy']
+        loss = history.history['loss']
+        val_loss = history.history['val_loss']
+        plt.subplot(1, 2, 1)
+        plt.plot(acc, label='Training Accuracy')
+        plt.plot(val_acc, label='Validation Accuracy')
+        plt.title('Training and Validation Accuracy')
+        plt.legend()
+        plt.subplot(1, 2, 2)
+        plt.plot(loss, label='Training Loss')
+        plt.plot(val_loss, label='Validation Loss')
+        plt.title('Training and Validation Loss')
+        plt.legend()
+        plt.show()
+（3）
